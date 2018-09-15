@@ -13,4 +13,5 @@ const commandController = new CommandController();
 
 tg.router
     .when(new Telegram.TextCommand('/ping', 'pingCommand'), commandController)
+    .when(new Telegram.TextCommand('/ate', 'ateCommand'), commandController)
     .otherwise(new OtherwiseController());
