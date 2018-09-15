@@ -71,6 +71,14 @@ class CommandController extends Telegram.TelegramBaseController {
 
     // ----------------------- Handler Functions --------------------------
 
+    startHandler($) {
+        $.sendMessage(`Hi.`, markD);
+    }
+
+    helpHandler($) {
+        $.sendMessage(`Help`, markD);
+    }
+
     inputHandler($) {
         $.sendMessage(`Hey! I'm *the NutriBot*. What should I call you ?`, markD);
         $.waitForRequest
@@ -189,15 +197,22 @@ class CommandController extends Telegram.TelegramBaseController {
         $.sendMessage(ans, markD);
     }
 
+    quicktipHandler($) {
+        $.sendMessage(`Not Ready Yet :p`);
+    }
+
     // --------------------------- Routes ------------------------------
 
     get routes() {
         return {
+            'startCommand': 'startHandler',
+            'helpCommand': 'helpHandler',
             'inputCommand': 'inputHandler',
             'ateCommand': 'ateHandler',
             'analysisCommand': 'analysisHandler',
             'suggestionsCommand': 'suggestionsHandler',
-            'threatsCommand': 'threatsHandler'
+            'threatsCommand': 'threatsHandler',
+            'quicktipCommand': 'quicktipHandler'
         };
     }
 }
