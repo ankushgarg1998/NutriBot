@@ -1,0 +1,14 @@
+{
+  "name": "cncthebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ankush Garg",
+  "license": "ISC",
+  "dependencies": {
+    "telegram-node-bot": "^4.0.5"
+  }
+}
