@@ -1,0 +1,51 @@
+{
+    "3": {
+        "protein": 16.7,
+        "fat": 27,
+        "calories": 1060,
+        "calcium": 600,
+        "iron": 9
+    },
+    "6": {
+        "protein": 20.1,
+        "fat": 25,
+        "calories": 1350,
+        "calcium": 600,
+        "iron": 13
+    },
+    "9": {
+        "protein": 29.5,
+        "fat": 30,
+        "calories": 1690,
+        "calcium": 600,
+        "iron": 16
+    },
+    "12": {
+        "protein": 39.9,
+        "fat": 35,
+        "calories": 2190,
+        "calcium": 800,
+        "iron": 21
+    },
+    "15": {
+        "protein": 54.3,
+        "fat": 45,
+        "calories": 2750,
+        "calcium": 800,
+        "iron": 32
+    },
+    "17": {
+        "protein": 61.5,
+        "fat": 50,
+        "calories": 3020,
+        "calcium": 800,
+        "iron": 28
+    },
+    "1000": {
+        "protein": 25,
+        "fat": 60,
+        "calories": 2320,
+        "calcium": 600,
+        "iron": 17  
+    }
+}

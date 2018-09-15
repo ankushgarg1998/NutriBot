@@ -9,6 +9,7 @@
   "author": "Ankush Garg",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "telegram-node-bot": "^4.0.5"
   }
 }

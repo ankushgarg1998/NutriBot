@@ -1,14 +1,17 @@
 {
-    "1234": {
-        "gender": "m",
+    "addychopra": {
+        "name": "Aditya Garg",
         "age": 12,
+        "category": "12",
         "history": {
-            "15Sep18": {
-                "food": ["apple", "mango"],
+            "15-9-18": {
+                "food": ["2 plate chole bhature", "1 cup chicken noodle soup"],
                 "nutrients": {
-                    "carbs": 12,
-                    "protein": 15,
-                    "calcium": 2
+                    "protein": 25,
+                    "fat": 60,
+                    "calories": 2320,
+                    "calcium": 600,
+                    "iron": 17
                 }
             }
         }
