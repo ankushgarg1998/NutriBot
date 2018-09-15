@@ -11,14 +11,31 @@ var fs = require('fs');
 var dataObj = JSON.parse(fs.readFileSync('./datastore/data.json', 'utf8'));
 
 var userObj = JSON.parse(fs.readFileSync('./datastore/user.json', 'utf8'));
-var foodObj = JSON.parse(fs.readFileSync('./datastore/food.json', 'utf8'));
+var dietObj = JSON.parse(fs.readFileSync('./datastore/diet.json', 'utf8'));
+var deficiency = JSON.parse(fs.readFileSync('./datastore/deficiency.json', 'utf8'));
+
+var markD = {
+    "parse_mode": "Markdown"
+};
 
 
 class CommandController extends Telegram.TelegramBaseController {
 
-    addFoodAte(user, food) {
+    giveDateString() {
         const date = new Date();
-        const dateString = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+        return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+    }
+
+    addFoodAte(user, food) {
+        const dateString = this.giveDateString();
+        if(!userObj[user])
+            userObj[user] = {
+                "name": "",
+                "gender": "m",
+                "age": 18,
+                "category": "17",
+                "history": {}
+            };
         if (!(userObj[user].history[dateString]))
             userObj[user].history[dateString] = {
                 'food': [],
@@ -95,6 +112,7 @@ class CommandController extends Telegram.TelegramBaseController {
                             }
                         });
                         console.log(userObj[user].history[dateString]);
+                        $.sendMessage(`Recorded.`);
                     })
                     .catch((error) => {
                         $.sendMessage(`Sorry! Could not find any such food item.`);
@@ -103,11 +121,52 @@ class CommandController extends Telegram.TelegramBaseController {
             });
     }
 
+    analysisHandler($) {
+        const user = $.message.from.username;
+        const dateString = this.giveDateString();
+        if(!userObj[user])
+            userObj[user] = {
+                "name": "",
+                "gender": "m",
+                "age": 18,
+                "category": "17",
+                "history": {}
+            };
+        if (!(userObj[user].history[dateString]))
+            userObj[user].history[dateString] = {
+                'food': [],
+                'nutrients': {
+                    "protein": 0,
+                    "fat": 0,
+                    "calories": 0,
+                    "calcium": 0,
+                    "iron": 0
+                }
+            };
+        const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
+        let newObj = {}
+        Object.keys(obj).forEach(key => {
+            if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
+                newObj[key] = 1;
+            } else
+                newObj[key] = 0;
+        });
+
+        $.sendMessage(`*Your Analysis*\n\n\
+- *Protein*: ${newObj.protein ? "Your protein intake is fine.": "Your diet is *deficient* in protein."}\n\
+- *Fat*: ${newObj.fat ? "Your fat intake is fine.": "Your diet is *deficient* in fats."}\n\
+- *Calories*: ${newObj.calories ? "Your calories intake is fine.": "Your diet is *deficient* in calories."}\n\
+- *Calcium*: ${newObj.calcium ? "Your calcium intake is fine.": "Your diet is *deficient* in calcium."}\n\
+- *Iron*: ${newObj.iron ? "Your iron intake is fine.": "Your diet is *deficient* in iron."}\n\
+        `, markD);
+    }
+
     get routes() {
         return {
             'inputCommand': 'inputHandler',
             'pingCommand': 'pingHandler',
-            'ateCommand': 'ateHandler'
+            'ateCommand': 'ateHandler',
+            'analysisCommand': 'analysisHandler'
         };
     }
 }
