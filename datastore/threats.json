@@ -1,0 +1,33 @@
+{
+    "protein": [
+        "Reduction in muscle mass.",
+        "Increased physical weakness.",
+        "Adversely affects the immune system.",
+        "Futher makes human prone to many diseases."
+    ],
+    "iron": [
+        "Inability to produce enough healthy oxygen-carrying red blood cells.",
+        "Can cause anemia, which means you have too little hemoglobin.",
+        "Makes one more susceptible to infections.",
+        "Might result in restless legs syndrome"
+    ],
+    "calcium": [
+        "Mental confusion",
+        "irritability",
+        "depression and anxiety",
+        "Tooth decay",
+        "Insufficient blood clotting",
+        "Bone fractures"
+    ],
+    "fat": [
+        "Lead to deficiencies of vitamins A, D, E and K.",
+        "Unhealthy Skin",
+        "Cognitive Problems",
+        "Vision Issues"
+    ],
+    "calories": [
+        "Excessive Weight Loss",
+        "Vitamin and Mineral Deficiencies",
+        "Muscle Wasting"
+    ]
+}

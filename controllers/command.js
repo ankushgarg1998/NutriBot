@@ -14,6 +14,7 @@ var userObj = JSON.parse(fs.readFileSync('./datastore/user.json', 'utf8'));
 var dietObj = JSON.parse(fs.readFileSync('./datastore/diet.json', 'utf8'));
 var deficiency = JSON.parse(fs.readFileSync('./datastore/deficiency.json', 'utf8'));
 var suggestions = JSON.parse(fs.readFileSync('./datastore/suggestions.json', 'utf8'));
+var threats = JSON.parse(fs.readFileSync('./datastore/threats.json', 'utf8'));
 
 var markD = {
     "parse_mode": "Markdown"
@@ -195,11 +196,54 @@ class CommandController extends Telegram.TelegramBaseController {
         let ans = "*SUGGESTIONS*\n\n";
         Object.keys(newObj).forEach(key => {
             if(newObj[key] === 0) {
-                ans += `- Since your diet is deficient in *${key}*. We recommend you to add some ${key} rich food items to your diet like `;
+                ans += `- Since your diet is *deficient* in *${key}*. We recommend you to add some ${key} rich food items to your diet like `;
                 suggestions[key].forEach(item => {
                     ans += `${item}, `;
                 });
                 ans += `etc.\n\n`;
+            }
+        });
+        $.sendMessage(ans, markD);
+    }
+
+    threatsHandler($) {
+        const user = $.message.from.username;
+        const dateString = this.giveDateString();
+        if(!userObj[user])
+            userObj[user] = {
+                "name": "",
+                "gender": "m",
+                "age": 18,
+                "category": "17",
+                "history": {}
+            };
+        if (!(userObj[user].history[dateString]))
+            userObj[user].history[dateString] = {
+                'food': [],
+                'nutrients': {
+                    "protein": 0,
+                    "fat": 0,
+                    "calories": 0,
+                    "calcium": 0,
+                    "iron": 0
+                }
+            };
+        const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
+        let newObj = {};
+        Object.keys(obj).forEach(key => {
+            if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
+                newObj[key] = 1;
+            } else
+                newObj[key] = 0;
+        });
+        let ans = "*THREATS*\n\n";
+        Object.keys(newObj).forEach(key => {
+            if(newObj[key] === 0) {
+                ans += `Due to deficiency of *${key}*.\n`;
+                threats[key].forEach(item => {
+                    ans += `- ${item}\n`;
+                });
+                ans += `\n\n`;
             }
         });
         $.sendMessage(ans, markD);
@@ -211,7 +255,8 @@ class CommandController extends Telegram.TelegramBaseController {
             'pingCommand': 'pingHandler',
             'ateCommand': 'ateHandler',
             'analysisCommand': 'analysisHandler',
-            'suggestionsCommand': 'suggestionsHandler'
+            'suggestionsCommand': 'suggestionsHandler',
+            'threatsCommand': 'threatsHandler'
         };
     }
 }
