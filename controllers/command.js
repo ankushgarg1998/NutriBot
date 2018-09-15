@@ -8,7 +8,6 @@ axios.defaults.headers.common['x-app-key'] = '4f7aa51f12261c3468911ee647a096ee';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 var fs = require('fs');
-// var dataObj = JSON.parse(fs.readFileSync('./datastore/data.json', 'utf8'));
 
 var userObj = JSON.parse(fs.readFileSync('./datastore/user.json', 'utf8'));
 var dietObj = JSON.parse(fs.readFileSync('./datastore/diet.json', 'utf8'));
@@ -23,12 +22,13 @@ var markD = {
 
 class CommandController extends Telegram.TelegramBaseController {
 
+    // ------------------------ Helper Functions --------------------------
     giveDateString() {
         const date = new Date();
         return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
     }
 
-    addFoodAte(user, food) {
+    initializeUser(user) {
         const dateString = this.giveDateString();
         if(!userObj[user])
             userObj[user] = {
@@ -49,19 +49,34 @@ class CommandController extends Telegram.TelegramBaseController {
                     "iron": 0
                 }
             };
+    }
+
+    addFoodAte(user, food) {
+        this.initializeUser(user);
+        const dateString = this.giveDateString();
         userObj[user].history[dateString].food.push(food);
         return dateString;
     }
 
+    deficiencyObj(obj, username) {
+        let newObj = {};
+        Object.keys(obj).forEach(key => {
+            if(dietObj[userObj[username].category][key] - obj[key] < deficiency[key]) {
+                newObj[key] = 1;
+            } else
+                newObj[key] = 0;
+        });
+        return newObj;
+    }
+
+    // ----------------------- Handler Functions --------------------------
+
     inputHandler($) {
-        $.sendMessage(`Hey! I'm the Health-Bot. What should I call you ?`);
+        $.sendMessage(`Hey! I'm *the NutriBot*. What should I call you ?`, markD);
         $.waitForRequest
             .then($ => {
                 const username = $.message.from.username;
-                if (!userObj[username])
-                    userObj[username] = {
-                        "history": {}
-                    };
+                this.initializeUser(username);
                 userObj[username].name = $.message.text;
                 $.sendMessage(`Hi! ${$.message.text}. What's your gender ?`);
                 $.waitForRequest
@@ -76,20 +91,14 @@ class CommandController extends Telegram.TelegramBaseController {
                         $.waitForRequest
                             .then($ => {
                                 userObj[username].age = parseInt($.message.text);
-                                console.log(userObj);
-                                $.sendMessage(`Alright! You data is Recorded.\nName: ${userObj[username].name}\nGender: ${userObj[username].gender}\nAge: ${userObj[username].age}`);
+                                $.sendMessage(`Alright! You data is Recorded.\n*Name*: ${userObj[username].name}\n*Gender*: ${userObj[username].gender}\n*Age*: ${userObj[username].age}\n\nYou can now start logging about what you eat.`, markD);
                             });
                     });
             });
     }
 
-    pingHandler($) {
-        $.sendMessage(`Sup ?`);
-        console.log($.message.from.username);
-    }
-
     ateHandler($) {
-        $.sendMessage(`Great! What did you eat ?`);
+        $.sendMessage(`Okay! What did you eat/drink ?`);
         $.waitForRequest
             .then($ => {
                 const ans = $.message.text;
@@ -103,17 +112,18 @@ class CommandController extends Telegram.TelegramBaseController {
                         userObj[user].history[dateString].nutrients.protein += response.data.foods[0].nf_protein;
                         userObj[user].history[dateString].nutrients.fat += response.data.foods[0].nf_total_fat;
                         userObj[user].history[dateString].nutrients.calories += response.data.foods[0].nf_calories;
+                        // Calcium - 301
                         response.data.foods[0].full_nutrients.forEach(obj => {
                             if(obj.attr_id === 301) {
                                 userObj[user].history[dateString].nutrients.calcium += obj.value;
                             }
                         });
+                        // Iron - 303
                         response.data.foods[0].full_nutrients.forEach(obj => {
                             if(obj.attr_id === 303) {
                                 userObj[user].history[dateString].nutrients.iron += obj.value;
                             }
                         });
-                        console.log(userObj[user].history[dateString]);
                         $.sendMessage(`Recorded.`);
                     })
                     .catch((error) => {
@@ -124,37 +134,11 @@ class CommandController extends Telegram.TelegramBaseController {
     }
 
     analysisHandler($) {
-        const user = $.message.from.username;
-        const dateString = this.giveDateString();
-        if(!userObj[user])
-            userObj[user] = {
-                "name": "",
-                "gender": "m",
-                "age": 18,
-                "category": "17",
-                "history": {}
-            };
-        if (!(userObj[user].history[dateString]))
-            userObj[user].history[dateString] = {
-                'food': [],
-                'nutrients': {
-                    "protein": 0,
-                    "fat": 0,
-                    "calories": 0,
-                    "calcium": 0,
-                    "iron": 0
-                }
-            };
+        this.initializeUser($.message.from.username);
         const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
-        let newObj = {};
-        Object.keys(obj).forEach(key => {
-            if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
-                newObj[key] = 1;
-            } else
-                newObj[key] = 0;
-        });
+        const newObj = this.deficiencyObj(obj, $.message.from.username);
 
-        $.sendMessage(`*YOUR ANALYSIS*\n\n\
+        $.sendMessage(`*YOUR DIET ANALYSIS*\n\n\
 - *Protein*: ${newObj.protein ? "Your protein intake is fine.": "Your diet is *deficient* in protein."}\n\
 - *Fat*: ${newObj.fat ? "Your fat intake is fine.": "Your diet is *deficient* in fats."}\n\
 - *Calories*: ${newObj.calories ? "Your calories intake is fine.": "Your diet is *deficient* in calories."}\n\
@@ -164,78 +148,31 @@ class CommandController extends Telegram.TelegramBaseController {
     }
 
     suggestionsHandler($) {
-        const user = $.message.from.username;
-        const dateString = this.giveDateString();
-        if(!userObj[user])
-            userObj[user] = {
-                "name": "",
-                "gender": "m",
-                "age": 18,
-                "category": "17",
-                "history": {}
-            };
-        if (!(userObj[user].history[dateString]))
-            userObj[user].history[dateString] = {
-                'food': [],
-                'nutrients': {
-                    "protein": 0,
-                    "fat": 0,
-                    "calories": 0,
-                    "calcium": 0,
-                    "iron": 0
-                }
-            };
+        this.initializeUser($.message.from.username);
         const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
-        let newObj = {};
-        Object.keys(obj).forEach(key => {
-            if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
-                newObj[key] = 1;
-            } else
-                newObj[key] = 0;
-        });
+        const newObj = this.deficiencyObj(obj, $.message.from.username);
+
         let ans = "*SUGGESTIONS*\n\n";
         Object.keys(newObj).forEach(key => {
             if(newObj[key] === 0) {
-                ans += `- Since your diet is *deficient* in *${key}*. We recommend you to add some ${key} rich food items to your diet like `;
+                ans += `- Since your diet is *deficient* in *${key}*. We recommend you to add some ${key} rich food items to your diet like: `;
                 suggestions[key].forEach(item => {
                     ans += `${item}, `;
                 });
                 ans += `etc.\n\n`;
             }
         });
+        if(ans === `*SUGGESTIONS*\n\n`) {
+            ans += `No suggestions for you. Your diet is absolutely fine! :D`;
+        }
         $.sendMessage(ans, markD);
     }
 
     threatsHandler($) {
-        const user = $.message.from.username;
-        const dateString = this.giveDateString();
-        if(!userObj[user])
-            userObj[user] = {
-                "name": "",
-                "gender": "m",
-                "age": 18,
-                "category": "17",
-                "history": {}
-            };
-        if (!(userObj[user].history[dateString]))
-            userObj[user].history[dateString] = {
-                'food': [],
-                'nutrients': {
-                    "protein": 0,
-                    "fat": 0,
-                    "calories": 0,
-                    "calcium": 0,
-                    "iron": 0
-                }
-            };
+        this.initializeUser($.message.from.username);
         const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
-        let newObj = {};
-        Object.keys(obj).forEach(key => {
-            if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
-                newObj[key] = 1;
-            } else
-                newObj[key] = 0;
-        });
+        const newObj = this.deficiencyObj(obj, $.message.from.username);
+        
         let ans = "*THREATS*\n\n";
         Object.keys(newObj).forEach(key => {
             if(newObj[key] === 0) {
@@ -246,13 +183,17 @@ class CommandController extends Telegram.TelegramBaseController {
                 ans += `\n\n`;
             }
         });
+        if(ans === `*THREATS*\n\n`) {
+            ans += `No threats ahead of you. Your diet is absolutely fine! :D`;
+        }
         $.sendMessage(ans, markD);
     }
+
+    // --------------------------- Routes ------------------------------
 
     get routes() {
         return {
             'inputCommand': 'inputHandler',
-            'pingCommand': 'pingHandler',
             'ateCommand': 'ateHandler',
             'analysisCommand': 'analysisHandler',
             'suggestionsCommand': 'suggestionsHandler',
