@@ -16,4 +16,5 @@ tg.router
     .when(new Telegram.TextCommand('/ping', 'pingCommand'), commandController)
     .when(new Telegram.TextCommand('/ate', 'ateCommand'), commandController)
     .when(new Telegram.TextCommand('/analysis', 'analysisCommand'), commandController)
+    .when(new Telegram.TextCommand('/suggestions', 'suggestionsCommand'), commandController)
     .otherwise(new OtherwiseController());

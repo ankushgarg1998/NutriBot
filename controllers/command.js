@@ -8,11 +8,12 @@ axios.defaults.headers.common['x-app-key'] = '4f7aa51f12261c3468911ee647a096ee';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 var fs = require('fs');
-var dataObj = JSON.parse(fs.readFileSync('./datastore/data.json', 'utf8'));
+// var dataObj = JSON.parse(fs.readFileSync('./datastore/data.json', 'utf8'));
 
 var userObj = JSON.parse(fs.readFileSync('./datastore/user.json', 'utf8'));
 var dietObj = JSON.parse(fs.readFileSync('./datastore/diet.json', 'utf8'));
 var deficiency = JSON.parse(fs.readFileSync('./datastore/deficiency.json', 'utf8'));
+var suggestions = JSON.parse(fs.readFileSync('./datastore/suggestions.json', 'utf8'));
 
 var markD = {
     "parse_mode": "Markdown"
@@ -144,7 +145,7 @@ class CommandController extends Telegram.TelegramBaseController {
                 }
             };
         const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
-        let newObj = {}
+        let newObj = {};
         Object.keys(obj).forEach(key => {
             if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
                 newObj[key] = 1;
@@ -152,7 +153,7 @@ class CommandController extends Telegram.TelegramBaseController {
                 newObj[key] = 0;
         });
 
-        $.sendMessage(`*Your Analysis*\n\n\
+        $.sendMessage(`*YOUR ANALYSIS*\n\n\
 - *Protein*: ${newObj.protein ? "Your protein intake is fine.": "Your diet is *deficient* in protein."}\n\
 - *Fat*: ${newObj.fat ? "Your fat intake is fine.": "Your diet is *deficient* in fats."}\n\
 - *Calories*: ${newObj.calories ? "Your calories intake is fine.": "Your diet is *deficient* in calories."}\n\
@@ -161,12 +162,56 @@ class CommandController extends Telegram.TelegramBaseController {
         `, markD);
     }
 
+    suggestionsHandler($) {
+        const user = $.message.from.username;
+        const dateString = this.giveDateString();
+        if(!userObj[user])
+            userObj[user] = {
+                "name": "",
+                "gender": "m",
+                "age": 18,
+                "category": "17",
+                "history": {}
+            };
+        if (!(userObj[user].history[dateString]))
+            userObj[user].history[dateString] = {
+                'food': [],
+                'nutrients': {
+                    "protein": 0,
+                    "fat": 0,
+                    "calories": 0,
+                    "calcium": 0,
+                    "iron": 0
+                }
+            };
+        const obj = userObj[$.message.from.username].history[this.giveDateString()].nutrients;
+        let newObj = {};
+        Object.keys(obj).forEach(key => {
+            if(dietObj[userObj[$.message.from.username].category][key] - obj[key] < deficiency[key]) {
+                newObj[key] = 1;
+            } else
+                newObj[key] = 0;
+        });
+        let ans = "*SUGGESTIONS*\n\n";
+        Object.keys(newObj).forEach(key => {
+            if(newObj[key] === 0) {
+                ans += `- Since your diet is deficient in *${key}*. We recommend you to add some ${key} rich food items to your diet like `;
+                suggestions[key].forEach(item => {
+                    ans += `${item}, `;
+                });
+                ans += `etc.\n\n`;
+            }
+        });
+        $.sendMessage(ans, markD);
+    }
+
     get routes() {
         return {
             'inputCommand': 'inputHandler',
             'pingCommand': 'pingHandler',
             'ateCommand': 'ateHandler',
-            'analysisCommand': 'analysisHandler'
+            'analysisCommand': 'analysisHandler',
+            'suggestionsCommand': 'suggestionsHandler'
         };
     }
 }

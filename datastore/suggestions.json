@@ -1,0 +1,39 @@
+{
+    "protein": [
+        "Eggs",
+        "Greek Yogurt",
+        "Protein Shake",
+        "Meat",
+        "Peanut Butter"
+    ],
+    "fat": [
+        "Rice",
+        "Chocolate",
+        "Red Meat",
+        "Nut and nut butter",
+        "Potatoes and Starches"
+    ],
+    "calories": [
+        "Increase your meal",
+        "Red meat",
+        "Nut and nut butter",
+        "Potatoes and Starches"
+    ],
+    "calcium": [
+        "Milk, Cheese and other dairy foods",
+        "Soya beans",
+        "Soya drinks with added calcium",
+        "Nuts",
+        "Bread and anything made with fortified flour",
+        "Fish where you eat the bones, such as sardines and pilchards"
+    ],
+    "iron": [
+        "Fortified breakfast cereals",
+        "Enriched rice or pasta",
+        "Pumpkin seeds",
+        "Dried fruits – apricots, raisins and prunes",
+        "Lean beef",
+        "Chicken",
+        "Fish"
+    ]
+}
