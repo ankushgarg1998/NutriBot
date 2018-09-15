@@ -3,17 +3,20 @@
 const Telegram = require('telegram-node-bot');
 const axios = require('axios');
 
+// ------------------------- Request Headers for Nutritionix API -----------
 axios.defaults.headers.common['x-app-id'] = '286ec226';
 axios.defaults.headers.common['x-app-key'] = '4f7aa51f12261c3468911ee647a096ee';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-var fs = require('fs');
 
+// -------------------------- Importing JSONs ---------------------------
+var fs = require('fs');
 var userObj = JSON.parse(fs.readFileSync('./datastore/user.json', 'utf8'));
 var dietObj = JSON.parse(fs.readFileSync('./datastore/diet.json', 'utf8'));
 var deficiency = JSON.parse(fs.readFileSync('./datastore/deficiency.json', 'utf8'));
 var suggestions = JSON.parse(fs.readFileSync('./datastore/suggestions.json', 'utf8'));
 var threats = JSON.parse(fs.readFileSync('./datastore/threats.json', 'utf8'));
+var tips = JSON.parse(fs.readFileSync('./datastore/tips.json', 'utf8'));
 
 var markD = {
     "parse_mode": "Markdown"
@@ -164,8 +167,13 @@ class CommandController extends Telegram.TelegramBaseController {
         Object.keys(newObj).forEach(key => {
             if(newObj[key] === 0) {
                 ans += `- Since your diet is *deficient* in *${key}*. We recommend you to add some ${key} rich food items to your diet like: `;
+                let first = 0;
                 suggestions[key].forEach(item => {
                     ans += `${item}, `;
+                    if(first < 1) {
+                        ++first;
+                        $.sendPhoto(suggestions[key + '_img']);
+                    }
                 });
                 ans += `etc.\n\n`;
             }
@@ -198,7 +206,7 @@ class CommandController extends Telegram.TelegramBaseController {
     }
 
     quicktipHandler($) {
-        $.sendMessage(`Not Ready Yet :p`);
+        $.sendMessage('*Random Health Tip*\n\n' + tips[Math.floor(Math.random() * tips.length)], markD);
     }
 
     // --------------------------- Routes ------------------------------

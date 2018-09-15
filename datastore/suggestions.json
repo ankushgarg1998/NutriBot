@@ -6,6 +6,7 @@
         "Meat",
         "Peanut Butter"
     ],
+    "protein_img": "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eggs_slideshow/getty_photo_of_eggs_in_carton.jpg",
     "fat": [
         "Rice",
         "Chocolate",
@@ -13,12 +14,14 @@
         "Nut and nut butter",
         "Potatoes and Starches"
     ],
+    "fat_img": "https://assets.bonappetit.com/photos/57ad407653e63daf11a4dd60/master/w_1200,c_limit/chopstick-ready-rice.jpg",
     "calories": [
-        "Increase your meal",
         "Red meat",
         "Nut and nut butter",
+        "Heavy meal",
         "Potatoes and Starches"
     ],
+    "calories_img": "https://food.fnr.sndimg.com/content/dam/images/food/fullset/2003/9/29/0/ig1a07_roasted_potatoes.jpg.rend.hgtvcom.616.462.suffix/1446840363593.jpeg",
     "calcium": [
         "Milk, Cheese and other dairy foods",
         "Soya beans",
@@ -27,13 +30,15 @@
         "Bread and anything made with fortified flour",
         "Fish where you eat the bones, such as sardines and pilchards"
     ],
+    "calcium_img": "https://www.worldatlas.com/r/w728-h425-c728x425/upload/b1/98/3d/shutterstock-568076731.jpg",
     "iron": [
-        "Fortified breakfast cereals",
+        "Spinach",
         "Enriched rice or pasta",
         "Pumpkin seeds",
         "Dried fruits – apricots, raisins and prunes",
         "Lean beef",
         "Chicken",
         "Fish"
-    ]
+    ],
+    "iron_img": "http://www.mellosystemz.com/TSG/wp-content/uploads/2016/10/Fresh-Spinach-Palak.jpg"
 }
