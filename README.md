@@ -11,14 +11,6 @@ It is developed in [NodeJS](https://nodejs.org/en/) and is live on Telegram as [
 
 Developed by [Ankush Garg](https://ankushgarg1998.github.io/), [Ayush Yadav](http://github.com/geek-ayush) & [Aditya Garg](https://github.com/addy1234)
 
-## FEATURES
-
-### 1.
-
-### 4. HELP
-*/help* command can be used by anyone seeking help about the bot or commands.
-
-<hr>
 
 ## All Commands Documentation
 You can control HACKABOT by sending these commands:
