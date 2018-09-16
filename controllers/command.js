@@ -22,6 +22,8 @@ var markD = {
     "parse_mode": "Markdown"
 };
 
+var msg = `The *NUTRI-BOT* is a telegram chatbot that keeps track of your intake and takes care of your diet. It uses Natural Language Processing(NLP), to recognize what you\'ve had and in what quantity. So you can enter stuff like _"2 plate Chole Bhature"_ or _"1 Glass of Milk"_ or _"3 Roti"_ or _"3 Apples"_. It\'ll record and keep a history of all your intake. It then analyses your current diet and provides you with custom suggestions on ways to improve it. It can also tell you the possible threats in the future, if you continue with the same diet.\n\nIt is developed in NodeJS and is live on Telegram as @TheNutriBot.\n\nDeveloped by @ankushgarg1998, Ayush Yadav & @Gargaddy\n`;
+    msg += `\n\n\nYou can control me by sending these commands:\n\n/help - Shows the Help message\r\n\/input - Lets user input her details\r\n\/ate - Let user log whatever she ate\r\n\/analysis - Shows today\'s diet analysis\r\n\/suggestions - Custom suggestions to improve your diet\r\n\/threats - Shows threats on the basis of current diet\r\n\/quicktip - A random health tip.\r\n\r\n_But wait, you don\'t actually have to type these commands. See that *[\/]* (slash box) at the bottom-right. Just press that and you can select any command.\n\n*We wish you good Health.*`;
 
 class CommandController extends Telegram.TelegramBaseController {
 
@@ -75,11 +77,11 @@ class CommandController extends Telegram.TelegramBaseController {
     // ----------------------- Handler Functions --------------------------
 
     startHandler($) {
-        $.sendMessage(`Hi.`, markD);
+        $.sendMessage(`Hi. My name is Nutri-Bot! Enter /input to get started`, markD);
     }
 
     helpHandler($) {
-        $.sendMessage(`Help`, markD);
+        $.sendMessage(`Hi. My name is Nutri-Bot! Enter /input to get started`, markD);
     }
 
     inputHandler($) {
