@@ -13,19 +13,15 @@ Developed by [Ankush Garg](https://ankushgarg1998.github.io/), [Ayush Yadav](htt
 
 
 ## All Commands Documentation
+
 You can control HACKABOT by sending these commands:
-
-- **/help** - Gets this message anytime, if you're stuck.
-
-- **/details** - Shows Details of the Hackathon
-- **/judgingcriteria** - Shows Judging Criteria
-- **/schedule** - Shows Schedule of the Hack
-- **/location** - Venue of the Event
-- **/subscribe** - Subscribe to updates of this Hackathon
-- **/unsubscribe** - Unsubscribe from updates of this Hackathon
-- **/allannouncements** - Shows the List of all the announcements happened yet
-- **/sharepic** - You can share your click with the organisers
-- **/feedback** - You can send feedback to the organisers of the Hack
+- **/help** - Shows the Help message 
+- **/input** - Lets user input her details 
+- **/ate** - Let user log whatever she ate
+- **/analysis** - Shows today's diet analysis
+- **/suggestions** - Custom suggestions to improve your diet
+- **/threats** - Shows threats on the basis of current diet
+- **/quicktip** - A random health tip.
 
 But wait, you don't actually have to type these commands. See that *[/]* (slash box) at the bottom-right. Just press that and you can select any command.
 
